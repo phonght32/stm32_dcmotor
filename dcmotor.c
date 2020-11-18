@@ -262,3 +262,28 @@ stm_err_t dcmotor_set_pwm_duty(dcmotor_handle_t handle, uint8_t duty)
 
     return STM_OK;
 }
+
+stm_err_t dcmotor_start(dcmotor_handle_t handle)
+{
+	DCMOTOR_CHECK(handle, DCMOTOR_START_ERR_STR, return STM_ERR_INVALID_ARG);
+
+    mutex_lock(handle->lock);
+
+    int ret;
+    ret = pwm_start(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl);
+    if (ret) {
+        STM_LOGE(TAG, DCMOTOR_START_ERR_STR);
+        mutex_unlock(handle->lock);
+        return STM_FAIL;
+    }
+    ret = pwm_start(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl);
+    if (ret) {
+        STM_LOGE(TAG, DCMOTOR_START_ERR_STR);
+        mutex_unlock(handle->lock);
+        return STM_FAIL;
+    }
+
+    mutex_unlock(handle->lock);
+
+    return STM_OK;
+}
