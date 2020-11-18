@@ -116,6 +116,13 @@ stm_err_t dcmotor_start(dcmotor_handle_t handle);
  */
 stm_err_t dcmotor_stop(dcmotor_handle_t handle);
 
+/*
+ * @brief   Destroy handle structure.
+ * @param   handle Handle structure.
+ * @return	None.
+ */
+void dcmotor_destroy(dcmotor_handle_t handle);
+
 #ifdef __cplusplus 
 }
 #endif

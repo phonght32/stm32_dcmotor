@@ -313,3 +313,8 @@ stm_err_t dcmotor_stop(dcmotor_handle_t handle)
 
 	return STM_OK;
 }
+
+void dcmotor_destroy(dcmotor_handle_t handle)
+{
+	free(handle);
+}
