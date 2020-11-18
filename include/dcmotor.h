@@ -88,6 +88,16 @@ stm_err_t dcmotor_toggle_dir(dcmotor_handle_t handle);
  */
 stm_err_t dcmotor_set_pwm_freq(dcmotor_handle_t handle, uint32_t freq);
 
+/*
+ * @brief   Set DC motor PWM duty.
+ * @param   handle Handle structure.
+ * @param 	duty PWM duty in %.
+ * @return
+ *      - STM_OK:       Success.
+ *      - Others:       Fail.
+ */
+stm_err_t dcmotor_set_pwm_duty(dcmotor_handle_t handle, uint8_t duty);
+
 #ifdef __cplusplus 
 }
 #endif
