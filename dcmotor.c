@@ -54,39 +54,39 @@ dcmotor_handle_t dcmotor_init(dcmotor_cfg_t *config)
 	DCMOTOR_CHECK(handle, DCMOTOR_INIT_ERR_STR, return NULL);
 
 	/* Configure pin a */
-    pwm_cfg_t a_cfg;
-    a_cfg.timer_num = config->hw_info.a_timer_num;
-    a_cfg.timer_pins_pack = config->hw_info.a_timer_pins_pack;
-    a_cfg.timer_chnl = config->hw_info.a_timer_chnl;
-    DCMOTOR_CHECK(!pwm_config(&a_cfg), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
+	pwm_cfg_t a_cfg;
+	a_cfg.timer_num = config->hw_info.a_timer_num;
+	a_cfg.timer_pins_pack = config->hw_info.a_timer_pins_pack;
+	a_cfg.timer_chnl = config->hw_info.a_timer_chnl;
+	DCMOTOR_CHECK(!pwm_config(&a_cfg), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
 
-    /* Configure pin b */
-    pwm_cfg_t b_cfg;
-    b_cfg.timer_num = config->hw_info.b_timer_num;
-    b_cfg.timer_pins_pack = config->hw_info.b_timer_pins_pack;
-    b_cfg.timer_chnl = config->hw_info.b_timer_chnl;
-    DCMOTOR_CHECK(!pwm_config(&b_cfg), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
+	/* Configure pin b */
+	pwm_cfg_t b_cfg;
+	b_cfg.timer_num = config->hw_info.b_timer_num;
+	b_cfg.timer_pins_pack = config->hw_info.b_timer_pins_pack;
+	b_cfg.timer_chnl = config->hw_info.b_timer_chnl;
+	DCMOTOR_CHECK(!pwm_config(&b_cfg), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
 
-    /* Set direction */
-    if (config->dir) {
-    	DCMOTOR_CHECK(!pwm_set_params(config->hw_info.a_timer_num, config->hw_info.a_timer_chnl, config->freq, config->duty), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
-    	DCMOTOR_CHECK(!pwm_set_params(config->hw_info.b_timer_num, config->hw_info.b_timer_chnl, 0, 0), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
-    } else {
-    	DCMOTOR_CHECK(!pwm_set_params(config->hw_info.a_timer_num, config->hw_info.a_timer_chnl, 0, 0), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
-    	DCMOTOR_CHECK(!pwm_set_params(config->hw_info.b_timer_num, config->hw_info.b_timer_chnl, config->freq, config->duty), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
-    }
+	/* Set direction */
+	if (config->dir) {
+		DCMOTOR_CHECK(!pwm_set_params(config->hw_info.a_timer_num, config->hw_info.a_timer_chnl, config->freq, config->duty), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
+		DCMOTOR_CHECK(!pwm_set_params(config->hw_info.b_timer_num, config->hw_info.b_timer_chnl, 0, 0), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
+	} else {
+		DCMOTOR_CHECK(!pwm_set_params(config->hw_info.a_timer_num, config->hw_info.a_timer_chnl, 0, 0), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
+		DCMOTOR_CHECK(!pwm_set_params(config->hw_info.b_timer_num, config->hw_info.b_timer_chnl, config->freq, config->duty), DCMOTOR_INIT_ERR_STR, {_dcmotor_cleanup(handle); return NULL;});
+	}
 
-    /* Update handle structure */
-    handle->hw_info.a_timer_num = config->hw_info.a_timer_num;
-    handle->hw_info.a_timer_chnl = config->hw_info.a_timer_chnl;
-    handle->hw_info.a_timer_pins_pack = config->hw_info.a_timer_pins_pack;
-    handle->hw_info.b_timer_num = config->hw_info.b_timer_num;
-    handle->hw_info.b_timer_chnl = config->hw_info.b_timer_chnl;
-    handle->hw_info.b_timer_pins_pack = config->hw_info.b_timer_pins_pack;
-    handle->dir = config->dir;
-    handle->freq = config->freq;
-    handle->duty = config->duty;
-    handle->lock = mutex_create();
+	/* Update handle structure */
+	handle->hw_info.a_timer_num = config->hw_info.a_timer_num;
+	handle->hw_info.a_timer_chnl = config->hw_info.a_timer_chnl;
+	handle->hw_info.a_timer_pins_pack = config->hw_info.a_timer_pins_pack;
+	handle->hw_info.b_timer_num = config->hw_info.b_timer_num;
+	handle->hw_info.b_timer_chnl = config->hw_info.b_timer_chnl;
+	handle->hw_info.b_timer_pins_pack = config->hw_info.b_timer_pins_pack;
+	handle->dir = config->dir;
+	handle->freq = config->freq;
+	handle->duty = config->duty;
+	handle->lock = mutex_create();
 
 	return handle;
 }
@@ -96,86 +96,86 @@ stm_err_t dcmotor_set_dir(dcmotor_handle_t handle, bool dir)
 	DCMOTOR_CHECK(handle, DCMOTOR_SET_DIR_ERR_STR, return STM_ERR_INVALID_ARG);
 
 	mutex_lock(handle->lock);
-	
+
 	int ret;
 	if (dir) {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, handle->freq, handle->duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	} else {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, handle->freq, handle->duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	}
 
 	handle->dir = dir;
-    mutex_unlock(handle->lock);
+	mutex_unlock(handle->lock);
 
-    return STM_OK;
+	return STM_OK;
 }
 
-stm_err_t dcmotor_toggle_dir(dcmotor_handle_t handle) 
+stm_err_t dcmotor_toggle_dir(dcmotor_handle_t handle)
 {
 	DCMOTOR_CHECK(handle, DCMOTOR_TOGGLE_DIR_ERR_STR, return STM_ERR_INVALID_ARG);
 
 	mutex_lock(handle->lock);
-	
+
 	int ret;
 	bool dir = !handle->dir;
 	if (dir) {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, handle->freq, handle->duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_TOGGLE_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_TOGGLE_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	} else {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_TOGGLE_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, handle->freq, handle->duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_TOGGLE_DIR_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	}
 
 	handle->dir = dir;
-    mutex_unlock(handle->lock);
+	mutex_unlock(handle->lock);
 
-    return STM_OK;
+	return STM_OK;
 }
 
 stm_err_t dcmotor_set_pwm_freq(dcmotor_handle_t handle, uint32_t freq)
@@ -183,42 +183,42 @@ stm_err_t dcmotor_set_pwm_freq(dcmotor_handle_t handle, uint32_t freq)
 	DCMOTOR_CHECK(handle, DCMOTOR_SET_PWM_FREQ_ERR_STR, return STM_ERR_INVALID_ARG);
 
 	mutex_lock(handle->lock);
-	
+
 	int ret;
 	if (handle->dir) {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, freq, handle->duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_FREQ_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_FREQ_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	} else {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_FREQ_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, freq, handle->duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_FREQ_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	}
 
 	handle->freq = freq;
-    mutex_unlock(handle->lock);
+	mutex_unlock(handle->lock);
 
-    return STM_OK;
+	return STM_OK;
 }
 
 stm_err_t dcmotor_set_pwm_duty(dcmotor_handle_t handle, uint8_t duty)
@@ -226,65 +226,65 @@ stm_err_t dcmotor_set_pwm_duty(dcmotor_handle_t handle, uint8_t duty)
 	DCMOTOR_CHECK(handle, DCMOTOR_SET_PWM_DUTY_ERR_STR, return STM_ERR_INVALID_ARG);
 
 	mutex_lock(handle->lock);
-	
+
 	int ret;
 	if (handle->dir) {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, handle->freq, duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_DUTY_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_DUTY_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	} else {
 		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, 0, 0);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_DUTY_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 
 		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, handle->freq, duty);
 		if (ret) {
 			STM_LOGE(TAG, DCMOTOR_SET_PWM_DUTY_ERR_STR);
-	        mutex_unlock(handle->lock);
-	        return STM_FAIL;
+			mutex_unlock(handle->lock);
+			return STM_FAIL;
 		}
 	}
 
 	handle->duty = duty;
-    mutex_unlock(handle->lock);
+	mutex_unlock(handle->lock);
 
-    return STM_OK;
+	return STM_OK;
 }
 
 stm_err_t dcmotor_start(dcmotor_handle_t handle)
 {
 	DCMOTOR_CHECK(handle, DCMOTOR_START_ERR_STR, return STM_ERR_INVALID_ARG);
 
-    mutex_lock(handle->lock);
+	mutex_lock(handle->lock);
 
-    int ret;
-    ret = pwm_start(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl);
-    if (ret) {
-        STM_LOGE(TAG, DCMOTOR_START_ERR_STR);
-        mutex_unlock(handle->lock);
-        return STM_FAIL;
-    }
-    ret = pwm_start(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl);
-    if (ret) {
-        STM_LOGE(TAG, DCMOTOR_START_ERR_STR);
-        mutex_unlock(handle->lock);
-        return STM_FAIL;
-    }
+	int ret;
+	ret = pwm_start(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl);
+	if (ret) {
+		STM_LOGE(TAG, DCMOTOR_START_ERR_STR);
+		mutex_unlock(handle->lock);
+		return STM_FAIL;
+	}
+	ret = pwm_start(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl);
+	if (ret) {
+		STM_LOGE(TAG, DCMOTOR_START_ERR_STR);
+		mutex_unlock(handle->lock);
+		return STM_FAIL;
+	}
 
-    mutex_unlock(handle->lock);
+	mutex_unlock(handle->lock);
 
-    return STM_OK;
+	return STM_OK;
 }
