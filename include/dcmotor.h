@@ -69,6 +69,15 @@ dcmotor_handle_t dcmotor_init(dcmotor_cfg_t *config);
  */
 stm_err_t dcmotor_set_dir(dcmotor_handle_t handle, bool dir);
 
+/*
+ * @brief   Toggle DC motor direction.
+ * @param   handle Handle structure.
+ * @return
+ *      - STM_OK:       Success.
+ *      - Others:       Fail.
+ */
+stm_err_t dcmotor_toggle_dir(dcmotor_handle_t handle);
+
 #ifdef __cplusplus 
 }
 #endif

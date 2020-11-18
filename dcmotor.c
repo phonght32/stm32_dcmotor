@@ -132,3 +132,47 @@ stm_err_t dcmotor_set_dir(dcmotor_handle_t handle, bool dir)
 
     return STM_OK;
 }
+
+stm_err_t dcmotor_toggle_dir(dcmotor_handle_t handle) 
+{
+	DCMOTOR_CHECK(handle, DCMOTOR_SET_DIR_ERR_STR, return STM_ERR_INVALID_ARG);
+
+	mutex_lock(handle->lock);
+	
+	int ret;
+	bool dir = !handle->dir;
+	if (dir) {
+		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, handle->freq, handle->duty);
+		if (ret) {
+			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
+	        mutex_unlock(handle->lock);
+	        return STM_FAIL;
+		}
+
+		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, 0, 0);
+		if (ret) {
+			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
+	        mutex_unlock(handle->lock);
+	        return STM_FAIL;
+		}
+	} else {
+		ret = pwm_set_params(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl, 0, 0);
+		if (ret) {
+			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
+	        mutex_unlock(handle->lock);
+	        return STM_FAIL;
+		}
+
+		ret = pwm_set_params(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl, handle->freq, handle->duty);
+		if (ret) {
+			STM_LOGE(TAG, DCMOTOR_SET_DIR_ERR_STR);
+	        mutex_unlock(handle->lock);
+	        return STM_FAIL;
+		}
+	}
+
+	handle->dir = dir;
+    mutex_unlock(handle->lock);
+
+    return STM_OK;
+}
