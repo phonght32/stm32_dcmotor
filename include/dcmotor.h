@@ -59,6 +59,16 @@ typedef struct {
  */
 dcmotor_handle_t dcmotor_init(dcmotor_cfg_t *config);
 
+/*
+ * @brief   Set DC motor direction.
+ * @param   handle Handle structure.
+ * @param   dir Direction.
+ * @return
+ *      - STM_OK:       Success.
+ *      - Others:       Fail.
+ */
+stm_err_t dcmotor_set_dir(dcmotor_handle_t handle, bool dir);
+
 #ifdef __cplusplus 
 }
 #endif
