@@ -107,6 +107,15 @@ stm_err_t dcmotor_set_pwm_duty(dcmotor_handle_t handle, uint8_t duty);
  */
 stm_err_t dcmotor_start(dcmotor_handle_t handle);
 
+/*
+ * @brief   Stop DC motor.
+ * @param   handle Handle structure.
+ * @return
+ *      - STM_OK:       Success.
+ *      - Others:       Fail.
+ */
+stm_err_t dcmotor_stop(dcmotor_handle_t handle);
+
 #ifdef __cplusplus 
 }
 #endif

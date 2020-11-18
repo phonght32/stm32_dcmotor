@@ -288,3 +288,28 @@ stm_err_t dcmotor_start(dcmotor_handle_t handle)
 
 	return STM_OK;
 }
+
+stm_err_t dcmotor_stop(dcmotor_handle_t handle)
+{
+	DCMOTOR_CHECK(handle, DCMOTOR_STOP_ERR_STR, return STM_ERR_INVALID_ARG);
+
+	mutex_lock(handle->lock);
+
+	int ret;
+	ret = pwm_stop(handle->hw_info.a_timer_num, handle->hw_info.a_timer_chnl);
+	if (ret) {
+		STM_LOGE(TAG, DCMOTOR_STOP_ERR_STR);
+		mutex_unlock(handle->lock);
+		return STM_FAIL;
+	}
+	ret = pwm_stop(handle->hw_info.b_timer_num, handle->hw_info.b_timer_chnl);
+	if (ret) {
+		STM_LOGE(TAG, DCMOTOR_STOP_ERR_STR);
+		mutex_unlock(handle->lock);
+		return STM_FAIL;
+	}
+
+	mutex_unlock(handle->lock);
+
+	return STM_OK;
+}
