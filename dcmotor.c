@@ -26,7 +26,7 @@ static const char* TAG = "DCMOTOR";
         }
 
 typedef struct dcmotor {
-	dcmotor_hardware_info_t 	hw_info;
+	dcmotor_hw_info_t 			hw_info;
 	bool 						dir;
 	uint32_t 					freq;
 	uint8_t 					duty;

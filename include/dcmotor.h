@@ -41,10 +41,10 @@ typedef struct {
 	timer_num_t					b_timer_num;			/*!< Pin B timer num */
 	timer_chnl_t				b_timer_chnl;			/*!< Pin B timer channel */
 	timer_pins_pack_t 			b_timer_pins_pack;		/*!< Pin B timer pins pack */
-} dcmotor_hardware_info_t;
+} dcmotor_hw_info_t;
 
 typedef struct {
-	dcmotor_hardware_info_t 	hw_info;				/*!< Hardware information */
+	dcmotor_hw_info_t 			hw_info;				/*!< Hardware information */
 	bool 						dir;					/*!< Direction */
 	uint32_t 					freq;					/*!< PWM frequency */
 	uint8_t 					duty;					/*!< PWM duty cycle */
