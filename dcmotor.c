@@ -42,12 +42,6 @@ dcmotor_handle_t dcmotor_init(dcmotor_cfg_t *config)
 {
 	/* Check input conditions */
 	DCMOTOR_CHECK(config, DCMOTOR_INIT_ERR_STR, return NULL);
-	DCMOTOR_CHECK(config->hw_info.a_timer_num < TIMER_NUM_MAX, DCMOTOR_INIT_ERR_STR, return NULL);
-	DCMOTOR_CHECK(config->hw_info.a_timer_chnl < TIMER_CHNL_MAX, DCMOTOR_INIT_ERR_STR, return NULL);
-	DCMOTOR_CHECK(config->hw_info.a_timer_pins_pack < TIMER_PINS_PACK_MAX, DCMOTOR_INIT_ERR_STR, return NULL);
-	DCMOTOR_CHECK(config->hw_info.b_timer_num < TIMER_NUM_MAX, DCMOTOR_INIT_ERR_STR, return NULL);
-	DCMOTOR_CHECK(config->hw_info.b_timer_chnl < TIMER_CHNL_MAX, DCMOTOR_INIT_ERR_STR, return NULL);
-	DCMOTOR_CHECK(config->hw_info.b_timer_pins_pack < TIMER_PINS_PACK_MAX, DCMOTOR_INIT_ERR_STR, return NULL);
 
 	/* Allocate memory for handle structure */
 	dcmotor_handle_t handle = calloc(1, sizeof(dcmotor_t));
