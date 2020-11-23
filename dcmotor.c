@@ -310,5 +310,5 @@ stm_err_t dcmotor_stop(dcmotor_handle_t handle)
 
 void dcmotor_destroy(dcmotor_handle_t handle)
 {
-	free(handle);
+	_dcmotor_cleanup(handle);
 }
